@@ -1,13 +1,13 @@
 #include "get_next_line.h"
 
-static size_t	ft_strlen(const char *s)
+size_t	ft_strlen(const char *s)
 {
 	size_t i;
 	for (i = 0; s[i]; i++);
 	return (i);
 }
 
-static char	*ft_strcpy(char *dst, const char *src)
+char	*ft_strcpy(char *dst, const char *src)
 {
 	while (*src)
 		*dst++ = *src++;
@@ -15,7 +15,7 @@ static char	*ft_strcpy(char *dst, const char *src)
 	return (dst);
 }
 
-static char *ft_strdup(const char *str)
+char	*ft_strdup(const char *str)
 {
 	char *dup = malloc(ft_strlen(str) + 1);
 	if (!dup)
@@ -24,7 +24,7 @@ static char *ft_strdup(const char *str)
 	return (dup);
 }
 
-static char	*ft_strjoin(char *s1, char const *s2)
+char	*ft_strjoin(char *s1, char const *s2)
 {
 	if (!s1 || !s2)
 		return (NULL);
@@ -37,7 +37,7 @@ static char	*ft_strjoin(char *s1, char const *s2)
 	return (str);
 }
 
-static char *ft_strchr(char *s, int c)
+char	*ft_strchr(char *s, int c)
 {
 	while (*s && *s != (unsigned char)c)
 		s++;
@@ -61,7 +61,10 @@ char	*get_next_line(int fd)
 		line = ft_strjoin(line, stash);
 	}
 	if (ft_strlen(line) == 0)
-		return (free(line), NULL);
+	{
+		free(line);
+		return (NULL);
+	}
 	if (newline != NULL)
 	{
 		cpy = newline - line + 1;
