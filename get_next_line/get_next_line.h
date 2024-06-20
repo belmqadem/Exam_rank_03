@@ -11,9 +11,8 @@
 #endif
 
 size_t	ft_strlen(const char *s);
-char	*ft_strcpy(char *dst, const char *src);
 char    *ft_strdup(const char *str);
-char	*ft_strjoin(char *s1, char const *s2);
+char	*ft_strjoin(char *s1, char *s2);
 char    *ft_strchr(char *s, int c);
 char	*get_next_line(int fd);
 

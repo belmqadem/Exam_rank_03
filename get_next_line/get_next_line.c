@@ -7,32 +7,35 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-char	*ft_strcpy(char *dst, const char *src)
-{
-	while (*src)
-		*dst++ = *src++;
-	*dst = '\0';
-	return (dst);
-}
-
 char	*ft_strdup(const char *str)
 {
 	char *dup = malloc(ft_strlen(str) + 1);
 	if (!dup)
 		return (NULL);
-	ft_strcpy(dup, str);
+	while (*str)
+		*dup++ = *str++;
+	*dup = '\0';
 	return (dup);
 }
 
-char	*ft_strjoin(char *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
+	char	*str;
+	size_t	i;
+	size_t	j;
+
 	if (!s1 || !s2)
 		return (NULL);
-	char *str = malloc((ft_strlen(s1) + ft_strlen(s2) + 1));
+	str = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
 	if (!str)
 		return (NULL);
-	ft_strcpy(str, s1);
-	ft_strcpy((str + ft_strlen(s1)), s2);
+	i = -1;
+	j = 0;
+	while (s1[++i] != '\0')
+		str[i] = s1[i];
+	while (s2[j] != '\0')
+		str[i++] = s2[j++];
+	str[ft_strlen(s1) + ft_strlen(s2)] = '\0';
 	free(s1);
 	return (str);
 }
@@ -49,16 +52,17 @@ char	*ft_strchr(char *s, int c)
 char	*get_next_line(int fd)
 {
 	static char stash[BUFFER_SIZE + 1];
-	char		*line;
-	char		*newline;
+	char		*line = NULL;
+	char		*newline = NULL;
+	char		buffer[BUFFER_SIZE + 1];
 	int			bytes;
-	int			cpy;
+	size_t		i, j;
 
 	line = ft_strdup(stash);
-	while (!(newline = ft_strchr(line, '\n')) && (bytes = read(fd, stash, BUFFER_SIZE)))
+	while (!(newline = ft_strchr(line, '\n')) && (bytes = read(fd, buffer, BUFFER_SIZE)) > 0)
 	{
-		stash[bytes] = '\0';
-		line = ft_strjoin(line, stash);
+		buffer[bytes] = '\0';
+		line = ft_strjoin(line, buffer);
 	}
 	if (ft_strlen(line) == 0)
 	{
@@ -67,14 +71,15 @@ char	*get_next_line(int fd)
 	}
 	if (newline != NULL)
 	{
-		cpy = newline - line + 1;
-		ft_strcpy(stash, newline + 1);
+		for (i = 0; line[i] && line[i] != '\n'; i++);
+		if (line[i] == '\n')
+			i++;
+		for (j = 0; line[i] != '\0'; i++, j++)
+			stash[j] = line[i];
+		stash[j] = '\0';
+		line[i - j] = '\0';
 	}
 	else
-	{
-		cpy = ft_strlen(line);
 		stash[0] = '\0';
-	}
-	line[cpy] = '\0';
 	return (line);
 }
